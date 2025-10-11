@@ -279,7 +279,7 @@ async def websocket_endpoint(websocket: WebSocket):
                     header = np.array([num_points], dtype=np.int32).tobytes()
                     # Points: num_points * 3 * 2 bytes (float16)
                     points_data = data['points'][:num_points].tobytes()
-                    mask = np.abs(data['points'][:, 2]) < 0.15
+                    mask = np.abs(data['points'][:, 2]) > 0.15
                     points_data_2 = data['points'][mask]
                     points_data_2[:, 2] = 0.0
                     points_data_2 = points_data_2.tobytes()
