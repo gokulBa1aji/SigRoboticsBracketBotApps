@@ -272,6 +272,8 @@ async def websocket_endpoint(websocket: WebSocket):
                     hist, xBins, yBins = np.histogram2d(points_data[0], points_data[1], bins=num_bins)
                     xBins = (xBins[1:] + xBins[0:num_bins]) / 2.0
                     yBins = (yBins[1:] + yBins[0:num_bins]) / 2.0
+                    print(xBins)
+                    print(yBins)
                     x_plot, y_plot = np.meshgrid(xBins, yBins)
                     points_data_2 = np.vstack((x_plot.flatten(), y_plot.flatten(), hist.flatten()))
                     points_data_2 = points_data_2.tobytes()
