@@ -279,7 +279,7 @@ async def websocket_endpoint(websocket: WebSocket):
                     x_plot, y_plot = np.meshgrid(xBins, yBins)
                     # print(x_plot)
                     # print(y_plot)
-                    points_data_2 = np.vstack((x_plot.flatten(), y_plot.flatten(), hist.flatten()))
+                    points_data_2 = np.vstack((x_plot.flatten(), y_plot.flatten(), hist.flatten())).T
                     points_data_2 = points_data_2.tobytes()
 
                     # Colors: num_points * 3 * 1 byte (uint8)
