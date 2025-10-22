@@ -269,7 +269,13 @@ async def websocket_endpoint(websocket: WebSocket):
                     # Points: num_points * 3 * 2 bytes (float16)
                     points_data = data['points'][:num_points]
                     num_bins = 25
-                    hist, xBins, yBins = np.histogram2d(points_data[0], points_data[1], bins=num_bins)
+                    x_min = np.min(points_data[0])
+                    x_max = np.max(points_data[0])
+
+                    y_min = np.min(points_data[1])
+                    y_max = np.max(points_data[1])
+
+                    hist, xBins, yBins = np.histogram2d(points_data[0], points_data[1], bins=num_bins range=[[x_min, x_max], [y_min, y_max]])
                     xBins = (xBins[1:] + xBins[0:num_bins]) / 2.0
                     yBins = (yBins[1:] + yBins[0:num_bins]) / 2.0
                     print("-" * 50)
