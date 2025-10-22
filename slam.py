@@ -275,6 +275,8 @@ async def websocket_endpoint(websocket: WebSocket):
                     print(xBins)
                     print(yBins)
                     x_plot, y_plot = np.meshgrid(xBins, yBins)
+                    print(x_plot)
+                    print(y_plot)
                     points_data_2 = np.vstack((x_plot.flatten(), y_plot.flatten(), hist.flatten()))
                     points_data_2 = points_data_2.tobytes()
 
