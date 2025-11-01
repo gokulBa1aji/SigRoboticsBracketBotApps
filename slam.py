@@ -276,11 +276,12 @@ async def websocket_endpoint(websocket: WebSocket):
                     # print(range)
                     low_mask = points_data[:, 2] < 0.05 * range
                     high_mask = points_data[:, 2] > 0.05 * range
-                    points_data[low_mask, 2] = 0
-                    points_data[high_mask, 2] = 20
+                    points_data[low_mask, 2] = 20
+                    points_data[high_mask, 2] = 0
 
-                    kde = KernelDensity(kernel='gaussian', bandwidth=0.2).fit(points_data)
-                    kde.score_samples(points_data)
+                    kde = KernelDensity(kernel='gaussian', bandwidth=0.2).fit(points_data[high_mask])
+                    scores = kde.score_samples(points_data[high_mask])
+                    probs = np.exp(scores)
 
                     # Colors: num_points * 3 * 1 byte (uint8)
                     # print(np.max(data['colors']))
@@ -294,9 +295,9 @@ async def websocket_endpoint(websocket: WebSocket):
                     colors_data[low_mask, 1] = 255
                     colors_data[low_mask, 2] = 255
 
-                    # colors_data[high_mask, 0] = 0
-                    # colors_data[high_mask, 1] = 0
-                    # colors_data[high_mask, 2] = 0
+                    colors_data[high_mask, 0] = 255 * probs
+                    colors_data[high_mask, 1] = 0
+                    colors_data[high_mask, 2] = 0
 
                     colors_data = colors_data.tobytes()
                     # Send as binary message
