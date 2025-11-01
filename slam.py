@@ -287,6 +287,7 @@ async def websocket_endpoint(websocket: WebSocket):
                     clusters = dbscan.fit_predict(points_data[high_mask])
                     noise_mask = clusters == -1
                     cluster_mask = clusters > -1
+                    print(np.sum(cluster_mask))
                     # probs = np.exp(scores)
                     # print("here")
 
