@@ -282,6 +282,7 @@ async def websocket_endpoint(websocket: WebSocket):
                     kde = KernelDensity(kernel='gaussian', bandwidth=0.2).fit(points_data[high_mask])
                     scores = kde.score_samples(points_data[high_mask])
                     probs = np.exp(scores)
+                    print("here")
 
                     # Colors: num_points * 3 * 1 byte (uint8)
                     # print(np.max(data['colors']))
