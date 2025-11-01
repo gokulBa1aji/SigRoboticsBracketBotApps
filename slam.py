@@ -277,7 +277,8 @@ async def websocket_endpoint(websocket: WebSocket):
                     points_data[low_mask, 2] = 20
                     points_data[high_mask, 2] = 0
                     # Colors: num_points * 3 * 1 byte (uint8)
-                    print(data['colors'].shape)
+                    print(np.max(data['colors']))
+                    print(np.min(data['colors']))
                     colors_data = data['colors'][:num_points].tobytes() if 'colors' in data.dtype.names else b''
                     
                     # Send as binary message
