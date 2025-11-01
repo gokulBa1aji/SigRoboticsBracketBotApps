@@ -283,6 +283,8 @@ async def websocket_endpoint(websocket: WebSocket):
                     # scores = kde.score_samples(points_data[high_mask])
                     dbscan = DBSCAN(eps=0.5, min_samples=5)
                     clusters = dbscan.fit_predict(points_data[high_mask])
+                    noise_mask = clusters == -1
+                    cluster_mask = clusters > -1
                     # probs = np.exp(scores)
                     # print("here")
 
@@ -301,6 +303,10 @@ async def websocket_endpoint(websocket: WebSocket):
                     colors_data[high_mask, 0] = 255
                     colors_data[high_mask, 1] = 0
                     colors_data[high_mask, 2] = 0
+
+                    colors_data[high_mask][cluster_mask, 1] = 255
+                    # colors_data[high_mask, 1] = 0
+                    # colors_data[high_mask, 2] = 0
 
                     colors_data = colors_data.tobytes()
                     # Send as binary message
