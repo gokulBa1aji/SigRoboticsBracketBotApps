@@ -272,7 +272,8 @@ async def websocket_endpoint(websocket: WebSocket):
                     points_data = data['points'][:num_points]
                     range = np.max(points_data[:, 2]) - np.min(points_data[:, 2])
                     print(range)
-                    points_data[points_data[:, 2] < 0.1 * range, 2] = 0
+                    points_data[points_data[:, 2] > 0.05 * range, 2] = 0
+                    points_data[points_data[:, 2] < 0.05 * range, 2] *= 10
                     # Colors: num_points * 3 * 1 byte (uint8)
                     colors_data = data['colors'][:num_points].tobytes() if 'colors' in data.dtype.names else b''
                     
