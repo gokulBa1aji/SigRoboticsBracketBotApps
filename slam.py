@@ -19,7 +19,7 @@ from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Response
 from fastapi.responses import HTMLResponse
 import uvicorn
 from bbos import Reader
-from sklearn.neighbors import KernelDensity
+from sklearn.cluster import DBSCAN
 
 points_queue = Queue(maxsize=2)
 
@@ -281,6 +281,8 @@ async def websocket_endpoint(websocket: WebSocket):
 
                     # kde = KernelDensity(kernel='gaussian', bandwidth=0.2).fit(points_data[high_mask])
                     # scores = kde.score_samples(points_data[high_mask])
+                    dbscan = DBSCAN(eps=0.5, min_samples=5)
+                    clusters = dbscan.fit_predict(points_data[high_mask])
                     # probs = np.exp(scores)
                     # print("here")
 
