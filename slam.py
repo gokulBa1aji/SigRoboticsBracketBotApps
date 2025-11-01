@@ -272,7 +272,7 @@ async def websocket_endpoint(websocket: WebSocket):
                     points_data = data['points'][:num_points]
 
                     num_points = 5000
-                    points_data = points_data[np.random.choice(data.shape[0], size=num_points, replace=False)]
+                    points_data = points_data[np.random.choice(points_data.shape[0], size=num_points, replace=False)]
                     
                     range = np.max(points_data[:, 2]) - np.min(points_data[:, 2])
                     # print(range)
