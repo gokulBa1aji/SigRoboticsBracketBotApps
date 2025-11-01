@@ -267,8 +267,6 @@ async def websocket_endpoint(websocket: WebSocket):
                 # Pack binary data
                 num_points = int(data['num_points'])
                 if num_points > 0 and num_points < 100000:
-                    # Header: 4 bytes (num_points as int32)
-                    header = np.array([num_points], dtype=np.int32).tobytes()
                     # Points: num_points * 3 * 2 bytes (float16)
                     # points are row vectors, points_data is N x 3
                     points_data = data['points'][:num_points]
@@ -314,6 +312,10 @@ async def websocket_endpoint(websocket: WebSocket):
 
                     colors_data = colors_data.tobytes()
                     # Send as binary message
+
+                    # Header: 4 bytes (num_points as int32)
+                    header = np.array([num_points], dtype=np.int32).tobytes()
+
                     await websocket.send_bytes(header + points_data.tobytes() + colors_data)
                     
             except:
