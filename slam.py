@@ -20,6 +20,7 @@ from fastapi.responses import HTMLResponse
 import uvicorn
 from bbos import Reader
 from sklearn.cluster import DBSCAN
+from sklearn.neighbors import KernelDensity
 
 points_queue = Queue(maxsize=2)
 
@@ -281,12 +282,13 @@ async def websocket_endpoint(websocket: WebSocket):
                     points_data[low_mask, 2] = 20
                     points_data[high_mask, 2] = 0
 
-                    # kde = KernelDensity(kernel='gaussian', bandwidth=0.2).fit(points_data[high_mask])
-                    # scores = kde.score_samples(points_data[high_mask])
-                    dbscan = DBSCAN(eps=10, min_samples=5)
-                    clusters = dbscan.fit_predict(points_data[high_mask])
-                    noise_mask = clusters == -1
-                    cluster_mask = clusters > -1
+                    kde = KernelDensity(kernel='gaussian', bandwidth=0.2).fit(points_data[high_mask])
+                    scores = kde.score_samples(points_data[high_mask])
+                    density = np.exp(scores)
+                    # dbscan = DBSCAN(eps=10, min_samples=5)
+                    # clusters = dbscan.fit_predict(points_data[high_mask])
+                    # noise_mask = clusters == -1
+                    # cluster_mask = clusters > -1
                     # print(np.sum(cluster_mask))
                     # probs = np.exp(scores)
                     # print("here")
@@ -299,16 +301,16 @@ async def websocket_endpoint(websocket: WebSocket):
                     colors_data = data['colors'][:num_points]
                     colors_data = colors_data * 0
                     
-                    colors_data[high_mask][cluster_mask] = np.array([0, 0, 255])
-                    colors_data[high_mask][noise_mask] = np.array([0, 255, 0])
+                    # colors_data[high_mask][cluster_mask] = np.array([0, 0, 255])
+                    # colors_data[high_mask][noise_mask] = np.array([0, 255, 0])
 
                     colors_data[low_mask, 0] = 255
                     colors_data[low_mask, 1] = 255
                     colors_data[low_mask, 2] = 255
 
-                    # colors_data[high_mask, 0] = 0
-                    # colors_data[high_mask, 1] = 255
-                    # colors_data[high_mask, 2] = 0
+                    colors_data[high_mask, 0] = 0
+                    colors_data[high_mask, 1] = 0
+                    colors_data[high_mask, 2] = density * 255
 
                     # colors_data[high_mask & cluster_mask, 2] = 255
                     # colors_data[high_mask, 1] = 0
