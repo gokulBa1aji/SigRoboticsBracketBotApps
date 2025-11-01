@@ -283,7 +283,7 @@ async def websocket_endpoint(websocket: WebSocket):
 
                     # kde = KernelDensity(kernel='gaussian', bandwidth=0.2).fit(points_data[high_mask])
                     # scores = kde.score_samples(points_data[high_mask])
-                    dbscan = DBSCAN(eps=0.5, min_samples=5)
+                    dbscan = DBSCAN(eps=10, min_samples=5)
                     clusters = dbscan.fit_predict(points_data[high_mask])
                     noise_mask = clusters == -1
                     cluster_mask = clusters > -1
@@ -296,13 +296,13 @@ async def websocket_endpoint(websocket: WebSocket):
                     # colors_data = data['colors'][:num_points].tobytes() if 'colors' in data.dtype.names else b''
                     # N x 3
                     colors_data = data['colors'][:num_points]
-                    # colors_data = colors_data * 0
+                    colors_data = colors_data * 0
                     
                     colors_data[low_mask, 0] = 255
                     colors_data[low_mask, 1] = 255
                     colors_data[low_mask, 2] = 255
 
-                    # colors_data[high_mask, 0] = 255
+                    colors_data[high_mask, 0] = 255
                     colors_data[high_mask, 1] = 0
                     colors_data[high_mask, 2] = 0
 
