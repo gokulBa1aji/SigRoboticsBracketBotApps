@@ -265,60 +265,18 @@ async def websocket_endpoint(websocket: WebSocket):
                 # Pack binary data
                 num_points = int(data['num_points'])
                 if num_points > 0 and num_points < 100000:
-                    
+                    # Header: 4 bytes (num_points as int32)
+                    header = np.array([num_points], dtype=np.int32).tobytes()
                     # Points: num_points * 3 * 2 bytes (float16)
                     points_data = data['points'][:num_points]
-                    num_bins = 25
-                    x_min = np.min(points_data[0])
-                    x_max = np.max(points_data[0])
-
-                    y_min = np.min(points_data[1])
-                    y_max = np.max(points_data[1])
-
-                    hist, xBins, yBins = np.histogram2d(points_data[0], points_data[1], bins=num_bins range=[[x_min, x_max], [y_min, y_max]])
-                    xBins = (xBins[1:] + xBins[0:num_bins]) / 2.0
-                    yBins = (yBins[1:] + yBins[0:num_bins]) / 2.0
-                    print("-" * 50)
-                    print(xBins)
-                    print(yBins)
-                    print("-" * 50)
-                    x_plot, y_plot = np.meshgrid(xBins, yBins)
-                    # print(x_plot)
-                    # print(y_plot)
-                    points_data_2 = np.vstack((x_plot.flatten(), y_plot.flatten(), hist.flatten())).T
-                    points_data_2 = points_data_2.tobytes()
-
+                    print(points_data.shape)
+                    # points_data[points_data < 0.1 * np.max(points_data)] =
                     # Colors: num_points * 3 * 1 byte (uint8)
-                    colors_data = np.ones(num_bins ** 2)
-                    colors_data = 254 * colors_data
-                    colors_data = colors_data.tobytes()
-
-                    # Header: 4 bytes (num_points as int32)
-                    header = np.array([num_bins ** 2], dtype=np.int32).tobytes()
+                    colors_data = data['colors'][:num_points].tobytes() if 'colors' in data.dtype.names else b''
                     
                     # Send as binary message
-                    # await websocket.send_bytes(header + points_data + colors_data)
-
-                    # Header: 4 bytes (num_points as int32)
-                    # header = np.array([num_points], dtype=np.int32).tobytes()
-                    # # Points: num_points * 3 * 2 bytes (float16)
-                    # points_data = data['points'][:num_points].tobytes()
-                    # mask = np.abs(data['points'][:, 2]) > 0.15
-                    # points_data_2 = data['points'][mask]
-                    # points_data_2[:, 2] = 0.0
-                    # points_data_2 = points_data_2.tobytes()
-                    # #print(points_data_2.shape)
-                    # # Colors: num_points * 3 * 1 byte (uint8)
-                    # colors_data = data['colors'][:num_points].tobytes() if 'colors' in data.dtype.names else b''
-                    # #print(data['colors'])
-                    # colors_data = np.ones(data['colors'].shape)
-                    # colors_data = 254 * colors_data
-                    # colors_data = colors_data[mask]
-                    # #print(colors_data)
-                    # colors_data = colors_data.tobytes()
-                    # header = np.array([data['points'][mask].shape[0]], dtype=np.int32).tobytes()
-                    # Send as binary message
-                    await websocket.send_bytes(header + points_data_2 + colors_data)                    
+                    await websocket.send_bytes(header + points_data.tobytes() + colors_data)
+                    
             except:
                 await asyncio.sleep(0.01)
                 
