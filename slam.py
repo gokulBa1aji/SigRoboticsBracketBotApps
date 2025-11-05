@@ -300,8 +300,8 @@ async def websocket_endpoint(websocket: WebSocket):
                     # print(np.min(data['colors']))
                     # colors_data = data['colors'][:num_points].tobytes() if 'colors' in data.dtype.names else b''
 
-                    M = cv2.getAffineTransform(prev_pointcloud[:, 0:2], points_data[:, 0:2])
-                    print(M)
+                    # M = cv2.getAffineTransform(prev_pointcloud[:, 0:2], points_data[:, 0:2])
+                    # print(M)
 
                     # N x 3
                     colors_data = data['colors'][:num_points]
