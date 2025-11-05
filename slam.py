@@ -7,6 +7,7 @@
 #   "uvicorn",
 #   "numpy",
 #   "websockets",
+#   "opencv-python"
 # ]
 # [tool.uv.sources]
 # bbos = { path = "/home/bracketbot/BracketBotOS", editable = true }
@@ -260,6 +261,7 @@ async def websocket_endpoint(websocket: WebSocket):
     print("WebSocket connection established for point cloud")
     
     try:
+        prev_pointcloud = np.zeros(5000, 3)
         while True:
             try:
                 # Get latest point cloud data
@@ -297,6 +299,10 @@ async def websocket_endpoint(websocket: WebSocket):
                     # print(np.max(data['colors']))
                     # print(np.min(data['colors']))
                     # colors_data = data['colors'][:num_points].tobytes() if 'colors' in data.dtype.names else b''
+
+                    M = cv2.getAffineTransform(prev_pointcloud, points_data)
+                    print(M)
+
                     # N x 3
                     colors_data = data['colors'][:num_points]
                     colors_data = colors_data * 0
@@ -323,6 +329,8 @@ async def websocket_endpoint(websocket: WebSocket):
 
                     # Header: 4 bytes (num_points as int32)
                     header = np.array([num_points], dtype=np.int32).tobytes()
+
+                    prev_pointcloud = points_data
 
                     await websocket.send_bytes(header + points_data.tobytes() + colors_data)
                     
