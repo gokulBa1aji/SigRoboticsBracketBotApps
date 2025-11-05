@@ -261,7 +261,7 @@ async def websocket_endpoint(websocket: WebSocket):
     print("WebSocket connection established for point cloud")
     
     try:
-        prev_pointcloud = np.zeros(5000, 3)
+        prev_pointcloud = np.zeros((5000, 3))
         while True:
             try:
                 # Get latest point cloud data
