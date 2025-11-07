@@ -52,11 +52,12 @@ def drive_explore():
             if ((t - t0) > 10 ** 9):
                 t0 = t
                 if (pivot):
-                    twist = [0.0, np.random.rand()]
+                    twist = [np.random.rand() * 0.1, 0.0]
                     pivot = False
                 else:
-                    twist = [np.random.rand() * 0.1, 0.0]
+                    twist = [0.0, np.random.rand()]
                     pivot = True
+                print(twist)
             w_drive['twist'] = np.array(twist, dtype=np.float32)
             
 
@@ -69,7 +70,7 @@ async def index():
 <html>
 <head>
   <meta charset="utf-8" />
-  <title>Point Cloud Stream</title>
+  <title>Point Cloud twist = [np.random.rand() * 0.1, 0.0]Stream</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     body { margin: 0; padding: 0; background: #0a0a0a; font-family: -apple-system, sans-serif; color: #fff; overflow: hidden; }
