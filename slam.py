@@ -364,6 +364,11 @@ def main():
     
     uvicorn.run(app, host="0.0.0.0", port=8004, log_level="error", 
                 access_log=False)
+    
+    with Writer("drive.ctrl", Type("drive_ctrl")) as w_drive:
+        while True:
+            twist = [0.2, 0.0]
+            w_drive['twist'] = np.array(twist, dtype=np.float32)
 
 if __name__ == "__main__":
     main()
