@@ -83,7 +83,7 @@ def odometry():
       while True:
           if r_pose.ready():
               # pos = [r_pose.data['x'], r_pose.data['y'], r_pose.data['theta']]
-              pos = [r_pose.data['x'], r_pose.data['y'], 0.0]
+              pos = [r_pose.data['x'].item(), r_pose.data['y'].item(), 0.0]
               odometry_points.append(pos)
               print(pos)
 
@@ -383,7 +383,13 @@ async def websocket_endpoint(websocket: WebSocket):
 
                     prev_pointcloud = points_data
                     prev_pointcloud_compressed = zlib.compress(points_data.tobytes())
-                    await websocket.send_bytes(header + points_data.tobytes() + colors_data)
+                    # await websocket.send_bytes(header + points_data.tobytes() + colors_data)
+
+                    odom_points = np.array(odom_points)
+                    addition = np.zeros((num_points, 3))
+                    odom_points = np.vstack(odom_points, addition)
+                    odom_points = odom_points[0 : num_points, :]
+                    await websocket.send_bytes(header + odom_points.tobytes() + colors_data)
                     
             except:
                 await asyncio.sleep(0.01)
