@@ -68,7 +68,7 @@ def drive_explore():
                     twist = [0.0, 0.0]
                     state = ExploreStates.STEP
                 elif (state == ExploreStates.STEP):
-                    twist = [0.0, np.random.rand() * 0.5]
+                    twist = [0.0, np.random.rand() * 0.5 * 0.0]
                     state = ExploreStates.HALT_2
                 elif (state == ExploreStates.HALT_2):
                     twist = [0.0, 0]
