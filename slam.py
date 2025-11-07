@@ -269,6 +269,7 @@ animate();
     '''
     return HTMLResponse(content=html)
 
+import zlib
 @app.websocket("/ws/points")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
@@ -276,6 +277,7 @@ async def websocket_endpoint(websocket: WebSocket):
     
     try:
         prev_pointcloud = np.zeros((5000, 3))
+        prev_pointcloud_compressed = None
         while True:
             try:
                 # Get latest point cloud data
@@ -345,8 +347,8 @@ async def websocket_endpoint(websocket: WebSocket):
                     header = np.array([num_points], dtype=np.int32).tobytes()
 
                     prev_pointcloud = points_data
-
-                    await websocket.send_bytes(header + points_data.tobytes() + colors_data)
+                    prev_pointcloud_compressed = zlib.compress(points_data.tobytes())
+                    await websocket.send_bytes(header + prev_pointcloud_compressed + colors_data)
                     
             except:
                 await asyncio.sleep(0.01)
