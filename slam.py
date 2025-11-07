@@ -79,13 +79,13 @@ def drive_explore():
 
 def odometry():
   with Reader("localizer.pose") as r_pose:
-    pos = [0.0, 0.0, 0.0]
-    while True:
-        if r_pose.ready():
-            # pos = [r_pose.data['x'], r_pose.data['y'], r_pose.data['theta']]
-            pos = [r_pose.data['x'], r_pose.data['y'], 0.0]
-            odometry_points.append(pos)
-            print(pos)
+      pos = [0.0, 0.0, 0.0]
+      while True:
+          if r_pose.ready():
+              # pos = [r_pose.data['x'], r_pose.data['y'], r_pose.data['theta']]
+              pos = [r_pose.data['x'], r_pose.data['y'], 0.0]
+              odometry_points.append(pos)
+              print(pos)
 
 
 app = FastAPI()
