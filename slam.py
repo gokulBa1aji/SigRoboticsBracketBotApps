@@ -28,6 +28,7 @@ import time
 from enum import Enum
 
 points_queue = Queue(maxsize=2)
+odometry_points = [[0, 0, 0]]
 
 class ExploreStates(Enum):
     PIVOT = 1
@@ -72,10 +73,20 @@ def drive_explore():
                 elif (state == ExploreStates.HALT_2):
                     twist = [0.0, 0]
                     state = ExploreStates.PIVOT
-                print(state)
-                print(twist)
+                # print(state)
+                # print(twist)
             w_drive['twist'] = np.array(twist, dtype=np.float32)
-            
+
+def odometry():
+  with Reader("localizer.pose") as r_pose:
+    pos = [0.0, 0.0, 0.0]
+    while True:
+        if r_pose.ready():
+            # pos = [r_pose.data['x'], r_pose.data['y'], r_pose.data['theta']]
+            pos = [r_pose.data['x'], r_pose.data['y'], 0.0]
+            odometry_points.append(pos)
+            print(pos)
+
 
 app = FastAPI()
 
@@ -372,7 +383,7 @@ async def websocket_endpoint(websocket: WebSocket):
 
                     prev_pointcloud = points_data
                     prev_pointcloud_compressed = zlib.compress(points_data.tobytes())
-                    await websocket.send_bytes(header + prev_pointcloud_compressed + colors_data)
+                    await websocket.send_bytes(header + points_data.tobytes() + colors_data)
                     
             except:
                 await asyncio.sleep(0.01)
@@ -400,6 +411,9 @@ def main():
 
     drive_thread = threading.Thread(target=drive_explore, daemon=True)
     drive_thread.start()
+
+    odom_thread = threading.Thread(target=odometry, daemon=True)
+    odom_thread.start()
     
     print("[+] Starting point cloud stream server on http://0.0.0.0:8004")
     print("[+] View stream at http://<robot-ip>:8004/")
