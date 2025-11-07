@@ -25,7 +25,15 @@ from sklearn.neighbors import KernelDensity
 
 import time
 
+from enum import Enum
+
 points_queue = Queue(maxsize=2)
+
+class ExploreStates(Enum):
+    PIVOT = 1
+    HALT_1 = 2
+    STEP = 3
+    HALT_2 = 4
 
 def pointcloud_reader():
     with Reader('camera.points') as r:
@@ -43,7 +51,8 @@ def pointcloud_reader():
 
 def drive_explore():
     t0 = time.perf_counter_ns()
-    pivot = False
+    # pivot = False
+    state = ExploreStates.PIVOT
     with Writer("drive.ctrl", Type("drive_ctrl")) as w_drive:
         twist = [0, np.random.rand()]
         while True:
@@ -51,12 +60,19 @@ def drive_explore():
             t = time.perf_counter_ns()
             if ((t - t0) > 10 ** 9):
                 t0 = t
-                if (pivot):
-                    twist = [np.random.rand() * 0.1, 0.0]
-                    pivot = False
-                else:
-                    twist = [0.0, np.random.rand()]
-                    pivot = True
+                if (state == ExploreStates.PIVOT):
+                    twist = [np.random.rand() * 0.2 - 0.1, 0.0]
+                    state = ExploreStates.HALT_1
+                elif (state == ExploreStates.HALT_1):
+                    twist = [0.0, 0.0]
+                    state = ExploreStates.STEP
+                elif (state == ExploreStates.STEP):
+                    twist = [0.0, np.random.rand() * 0.5]
+                    state = ExploreStates.HALT_2
+                elif (state == ExploreStates.HALT_2):
+                    twist = [0.0, 0]
+                    state = ExploreStates.PIVOT
+                print(state)
                 print(twist)
             w_drive['twist'] = np.array(twist, dtype=np.float32)
             
