@@ -23,6 +23,8 @@ from bbos import Reader, Writer, Type
 from sklearn.cluster import DBSCAN
 from sklearn.neighbors import KernelDensity
 
+import time
+
 points_queue = Queue(maxsize=2)
 
 def pointcloud_reader():
@@ -38,6 +40,13 @@ def pointcloud_reader():
                         points_queue.put_nowait(data)
                     except:
                         pass
+
+def drive_explore():
+    with Writer("drive.ctrl", Type("drive_ctrl")) as w_drive:
+        while True:
+            twist = [0.0, np.random.rand()]
+            w_drive['twist'] = np.array(twist, dtype=np.float32)
+            time.sleep(1)
 
 app = FastAPI()
 
@@ -357,6 +366,9 @@ async def get_status():
 def main():
     reader_thread = threading.Thread(target=pointcloud_reader, daemon=True)
     reader_thread.start()
+
+    drive_thread = threading.Thread(target=drive_explore, daemon=True)
+    drive_thread.start()
     
     print("[+] Starting point cloud stream server on http://0.0.0.0:8004")
     print("[+] View stream at http://<robot-ip>:8004/")
@@ -364,11 +376,6 @@ def main():
     
     uvicorn.run(app, host="0.0.0.0", port=8004, log_level="error", 
                 access_log=False)
-    
-    with Writer("drive.ctrl", Type("drive_ctrl")) as w_drive:
-        while True:
-            twist = [0.0, 0.2]
-            w_drive['twist'] = np.array(twist, dtype=np.float32)
 
 if __name__ == "__main__":
     main()
