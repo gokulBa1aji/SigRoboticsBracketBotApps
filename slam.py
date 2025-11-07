@@ -68,7 +68,7 @@ def drive_explore():
                     twist = [0.0, 0.0]
                     state = ExploreStates.STEP
                 elif (state == ExploreStates.STEP):
-                    twist = [0.0, np.random.rand() * 0.5 * 0.0]
+                    twist = [0.0, np.random.rand() * 0.5]
                     state = ExploreStates.HALT_2
                 elif (state == ExploreStates.HALT_2):
                     twist = [0.0, 0]
@@ -389,6 +389,7 @@ async def websocket_endpoint(websocket: WebSocket):
                     addition = np.zeros((num_points, 3))
                     odom_points = np.vstack(odom_points, addition)
                     odom_points = odom_points[0 : num_points, :]
+                    print(odom_points.shape)
                     await websocket.send_bytes(header + odom_points.tobytes() + colors_data)
                     
             except:
