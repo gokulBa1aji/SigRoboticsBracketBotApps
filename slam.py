@@ -42,11 +42,16 @@ def pointcloud_reader():
                         pass
 
 def drive_explore():
+    t0 = time.perf_counter_ns()
     with Writer("drive.ctrl", Type("drive_ctrl")) as w_drive:
+        twist = [0.0, np.random.rand()]
         while True:
-            twist = [0.0, np.random.rand()]
+            t = time.perf_counter_ns()
+            if ((t - t0) > 10 ** 9):
+                t0 = t
+                twist = [0.0, np.random.rand()]
             w_drive['twist'] = np.array(twist, dtype=np.float32)
-            time.sleep(1)
+            
 
 app = FastAPI()
 
