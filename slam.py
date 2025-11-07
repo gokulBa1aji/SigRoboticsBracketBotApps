@@ -367,7 +367,7 @@ def main():
     
     with Writer("drive.ctrl", Type("drive_ctrl")) as w_drive:
         while True:
-            twist = [0.2, 0.0]
+            twist = [0.0, 0.2]
             w_drive['twist'] = np.array(twist, dtype=np.float32)
 
 if __name__ == "__main__":
