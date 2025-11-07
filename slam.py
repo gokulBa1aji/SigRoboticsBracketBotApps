@@ -47,6 +47,7 @@ def drive_explore():
         twist = [np.random.rand(), np.random.rand()]
         while True:
             twist = [np.random.rand(), np.random.rand()]
+            t = time.perf_counter_ns()
             if ((t - t0) > 10 ** 9):
                 t0 = t
                 twist = [0.0, np.random.rand()]
