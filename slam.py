@@ -385,7 +385,7 @@ async def websocket_endpoint(websocket: WebSocket):
                     prev_pointcloud_compressed = zlib.compress(points_data.tobytes())
                     # await websocket.send_bytes(header + points_data.tobytes() + colors_data)
 
-                    odom_points = np.array(odom_points)
+                    odom_points = np.array(odometry_points)
                     addition = np.zeros((num_points, 3))
                     odom_points = np.vstack(odom_points, addition)
                     odom_points = odom_points[0 : num_points, :]
