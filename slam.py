@@ -55,7 +55,7 @@ def drive_explore():
     # pivot = False
     state = ExploreStates.PIVOT
     with Writer("drive.ctrl", Type("drive_ctrl")) as w_drive:
-        twist = [0, np.random.rand()]
+        twist = [0, 0]
         while True:
             #twist = [0.0, np.random.rand()]
             t = time.perf_counter_ns()
