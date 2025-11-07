@@ -19,7 +19,7 @@ import numpy as np
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Response
 from fastapi.responses import HTMLResponse
 import uvicorn
-from bbos import Reader
+from bbos import Reader, Writer, Type
 from sklearn.cluster import DBSCAN
 from sklearn.neighbors import KernelDensity
 
