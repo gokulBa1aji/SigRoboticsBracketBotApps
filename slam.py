@@ -32,6 +32,8 @@ from enum import Enum
 points_queue = Queue(maxsize=2)
 odometry_points = [[0, 0, 0]]
 
+extern_reader = ""
+
 class ExploreStates(Enum):
     PIVOT = 1
     HALT_1 = 2
@@ -54,20 +56,20 @@ def pointcloud_reader():
 
 def pointcloud_reader_single():
     print("here")
-    with Reader('camera.points') as r:
-        print("here3")
-        if r.ready():
-            print("here5")
-            data = r.data
+    # with Reader('camera.points') as r:
+    print("here3")
+    if extern_reader.ready():
+        print("here5")
+        data = extern_reader.data
+        try:
+            print("here7")
+            points_queue.put_nowait(data)
+        except:
             try:
-                print("here7")
+                points_queue.get_nowait()
                 points_queue.put_nowait(data)
             except:
-                try:
-                    points_queue.get_nowait()
-                    points_queue.put_nowait(data)
-                except:
-                    pass
+                pass
     print("here9")
 
 def drive_explore():
@@ -436,9 +438,11 @@ def main():
     # reader_thread = threading.Thread(target=pointcloud_reader, daemon=True)
     # reader_thread.start()
 
-    scheduler = Scheduler()
-    scheduler.add_job(pointcloud_reader_single, 1)
-    scheduler.start()
+    with Reader('camera.points') as r:
+      extern_reader = r
+      scheduler = Scheduler()
+      scheduler.add_job(pointcloud_reader_single, 1)
+      scheduler.start()
 
     # drive_thread = threading.Thread(target=drive_explore, daemon=True)
     # drive_thread.start()
