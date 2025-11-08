@@ -23,6 +23,8 @@ from bbos import Reader, Writer, Type
 from sklearn.cluster import DBSCAN
 from sklearn.neighbors import KernelDensity
 
+from scheduler import Scheduler
+
 import time
 
 from enum import Enum
@@ -49,6 +51,19 @@ def pointcloud_reader():
                         points_queue.put_nowait(data)
                     except:
                         pass
+
+def pointcloud_reader_single():
+    with Reader('camera.points') as r:
+        if r.ready():
+            data = r.data
+            try:
+                points_queue.put_nowait(data)
+            except:
+                try:
+                    points_queue.get_nowait()
+                    points_queue.put_nowait(data)
+                except:
+                    pass
 
 def drive_explore():
     t0 = time.perf_counter_ns()
@@ -413,8 +428,12 @@ async def get_status():
         return {"status": "error"}
 
 def main():
-    reader_thread = threading.Thread(target=pointcloud_reader, daemon=True)
-    reader_thread.start()
+    # reader_thread = threading.Thread(target=pointcloud_reader, daemon=True)
+    # reader_thread.start()
+
+    scheduler = Scheduler()
+    scheduler.add_job(pointcloud_reader_single)
+    scheduler.start()
 
     # drive_thread = threading.Thread(target=drive_explore, daemon=True)
     # drive_thread.start()
