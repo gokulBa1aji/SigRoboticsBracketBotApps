@@ -53,6 +53,7 @@ def pointcloud_reader():
                         pass
 
 def pointcloud_reader_single():
+    print("here")
     with Reader('camera.points') as r:
         if r.ready():
             data = r.data
@@ -432,7 +433,7 @@ def main():
     # reader_thread.start()
 
     scheduler = Scheduler()
-    scheduler.add_job(pointcloud_reader_single)
+    scheduler.add_job(pointcloud_reader_single, 1)
     scheduler.start()
 
     # drive_thread = threading.Thread(target=drive_explore, daemon=True)
