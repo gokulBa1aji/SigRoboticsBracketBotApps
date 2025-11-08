@@ -383,14 +383,14 @@ async def websocket_endpoint(websocket: WebSocket):
 
                     prev_pointcloud = points_data
                     prev_pointcloud_compressed = zlib.compress(points_data.tobytes())
-                    # await websocket.send_bytes(header + points_data.tobytes() + colors_data)
+                    await websocket.send_bytes(header + points_data.tobytes() + colors_data)
 
-                    odom_points = np.array(odometry_points)
-                    addition = np.zeros((num_points, 3))
-                    odom_points = np.vstack(odom_points, addition)
-                    odom_points = odom_points[0 : num_points, :]
-                    print(odom_points.shape)
-                    await websocket.send_bytes(header + odom_points.tobytes() + colors_data)
+                    # odom_points = np.array(odometry_points)
+                    # addition = np.zeros((num_points, 3))
+                    # odom_points = np.vstack(odom_points, addition)
+                    # odom_points = odom_points[0 : num_points, :]
+                    # print(odom_points.shape)
+                    # await websocket.send_bytes(header + odom_points.tobytes() + colors_data)
                     
             except:
                 await asyncio.sleep(0.01)
@@ -416,11 +416,11 @@ def main():
     reader_thread = threading.Thread(target=pointcloud_reader, daemon=True)
     reader_thread.start()
 
-    drive_thread = threading.Thread(target=drive_explore, daemon=True)
-    drive_thread.start()
+    # drive_thread = threading.Thread(target=drive_explore, daemon=True)
+    # drive_thread.start()
 
-    odom_thread = threading.Thread(target=odometry, daemon=True)
-    odom_thread.start()
+    # odom_thread = threading.Thread(target=odometry, daemon=True)
+    # odom_thread.start()
     
     print("[+] Starting point cloud stream server on http://0.0.0.0:8004")
     print("[+] View stream at http://<robot-ip>:8004/")
