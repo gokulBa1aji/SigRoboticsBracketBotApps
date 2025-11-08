@@ -104,6 +104,7 @@ def pointcloud_reader_single():
 #             w_drive['twist'] = np.array(twist, dtype=np.float32)
 
 def drive_explore_single():
+    global state
     print(state)
     # t0 = time.perf_counter_ns()
     # pivot = False
