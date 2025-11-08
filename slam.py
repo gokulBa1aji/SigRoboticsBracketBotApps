@@ -40,6 +40,10 @@ class ExploreStates(Enum):
     STEP = 3
     HALT_2 = 4
 
+state = ExploreStates.PIVOT
+w_drive = Writer("drive.ctrl", Type("drive_ctrl"))
+twist = [0, 0]
+
 def pointcloud_reader():
     with Reader('camera.points') as r:
         while True:
@@ -55,14 +59,14 @@ def pointcloud_reader():
                         pass
 
 def pointcloud_reader_single():
-    print("here")
+    # print("here")
     # with Reader('camera.points') as r:
-    print("here3")
+    # print("here3")
     if extern_reader.ready():
-        print("here5")
+        # print("here5")
         data = extern_reader.data
         try:
-            print("here7")
+            # print("here7")
             points_queue.put_nowait(data)
         except:
             try:
@@ -70,40 +74,37 @@ def pointcloud_reader_single():
                 points_queue.put_nowait(data)
             except:
                 pass
-    print("here9")
+    # print("here9")
 
-def drive_explore():
-    t0 = time.perf_counter_ns()
-    # pivot = False
-    state = ExploreStates.PIVOT
-    with Writer("drive.ctrl", Type("drive_ctrl")) as w_drive:
-        twist = [0, 0]
-        while True:
-            #twist = [0.0, np.random.rand()]
-            t = time.perf_counter_ns()
-            if ((t - t0) > 10 ** 9):
-                t0 = t
-                if (state == ExploreStates.PIVOT):
-                    twist = [np.random.rand() * 0.2 - 0.1, 0.0]
-                    state = ExploreStates.HALT_1
-                elif (state == ExploreStates.HALT_1):
-                    twist = [0.0, 0.0]
-                    state = ExploreStates.STEP
-                elif (state == ExploreStates.STEP):
-                    twist = [0.0, np.random.rand() * 0.5]
-                    state = ExploreStates.HALT_2
-                elif (state == ExploreStates.HALT_2):
-                    twist = [0.0, 0]
-                    state = ExploreStates.PIVOT
-                # print(state)
-                # print(twist)
-            w_drive['twist'] = np.array(twist, dtype=np.float32)
-
-state = ExploreStates.PIVOT
-w_drive = Writer("drive.ctrl", Type("drive_ctrl"))
-twist = [0, 0]
+# def drive_explore():
+#     t0 = time.perf_counter_ns()
+#     # pivot = False
+#     state = ExploreStates.PIVOT
+#     with Writer("drive.ctrl", Type("drive_ctrl")) as w_drive:
+#         twist = [0, 0]
+#         while True:
+#             #twist = [0.0, np.random.rand()]
+#             t = time.perf_counter_ns()
+#             if ((t - t0) > 10 ** 9):
+#                 t0 = t
+#                 if (state == ExploreStates.PIVOT):
+#                     twist = [np.random.rand() * 0.2 - 0.1, 0.0]
+#                     state = ExploreStates.HALT_1
+#                 elif (state == ExploreStates.HALT_1):
+#                     twist = [0.0, 0.0]
+#                     state = ExploreStates.STEP
+#                 elif (state == ExploreStates.STEP):
+#                     twist = [0.0, np.random.rand() * 0.5]
+#                     state = ExploreStates.HALT_2
+#                 elif (state == ExploreStates.HALT_2):
+#                     twist = [0.0, 0]
+#                     state = ExploreStates.PIVOT
+#                 # print(state)
+#                 # print(twist)
+#             w_drive['twist'] = np.array(twist, dtype=np.float32)
 
 def drive_explore_single():
+    print(state)
     # t0 = time.perf_counter_ns()
     # pivot = False
     
