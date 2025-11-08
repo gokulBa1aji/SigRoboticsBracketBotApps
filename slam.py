@@ -99,6 +99,37 @@ def drive_explore():
                 # print(twist)
             w_drive['twist'] = np.array(twist, dtype=np.float32)
 
+state = ExploreStates.PIVOT
+w_drive = Writer("drive.ctrl", Type("drive_ctrl"))
+twist = [0, 0]
+
+def drive_explore_single():
+    # t0 = time.perf_counter_ns()
+    # pivot = False
+    
+    # with  as :
+    
+    # while True:
+        #twist = [0.0, np.random.rand()]
+    # t = time.perf_counter_ns()
+    # if ((t - t0) > 10 ** 9):
+    #     t0 = t
+    if (state == ExploreStates.PIVOT):
+        twist = [np.random.rand() * 0.2 - 0.1, 0.0]
+        state = ExploreStates.HALT_1
+    elif (state == ExploreStates.HALT_1):
+        twist = [0.0, 0.0]
+        state = ExploreStates.STEP
+    elif (state == ExploreStates.STEP):
+        twist = [0.0, np.random.rand() * 0.5]
+        state = ExploreStates.HALT_2
+    elif (state == ExploreStates.HALT_2):
+        twist = [0.0, 0]
+        state = ExploreStates.PIVOT
+    # print(state)
+    # print(twist)
+    w_drive['twist'] = np.array(twist, dtype=np.float32)
+
 def odometry():
   with Reader("localizer.pose") as r_pose:
       pos = [0.0, 0.0, 0.0]
@@ -442,6 +473,7 @@ def main():
       # extern_reader = r
     scheduler = Scheduler()
     scheduler.add_job(pointcloud_reader_single, 1)
+    scheduler.add_job(drive_explore_single, 10)
     scheduler.start()
 
     # drive_thread = threading.Thread(target=drive_explore, daemon=True)
