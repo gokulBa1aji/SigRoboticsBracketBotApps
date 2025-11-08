@@ -15,7 +15,10 @@ class Scheduler:
 
             for i in range(len(self.jobs)):
                 if (t - t0[i] > self.dt[i] * 10 ** 9):
-                    self.jobs[i]()
+                    try:
+                        self.jobs[i]()
+                    except Exception as e:
+                        print(e)
                     t0[i] = t
             time.sleep(0.01)
 
