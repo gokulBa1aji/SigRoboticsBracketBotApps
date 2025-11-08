@@ -55,9 +55,12 @@ def pointcloud_reader():
 def pointcloud_reader_single():
     print("here")
     with Reader('camera.points') as r:
+        print("here3")
         if r.ready():
+            print("here5")
             data = r.data
             try:
+                print("here7")
                 points_queue.put_nowait(data)
             except:
                 try:
@@ -65,6 +68,7 @@ def pointcloud_reader_single():
                     points_queue.put_nowait(data)
                 except:
                     pass
+    print("here9")
 
 def drive_explore():
     t0 = time.perf_counter_ns()
