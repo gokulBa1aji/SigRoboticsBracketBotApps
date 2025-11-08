@@ -10,6 +10,7 @@ class Scheduler:
     def periodic(self):
         t0 = [time.perf_counter_ns() for i in range(len(self.jobs))]
         while True:
+            print("2 here")
             t = time.perf_counter_ns()
 
             for i in range(len(self.jobs)):
@@ -17,9 +18,6 @@ class Scheduler:
                     self.jobs[i]()
                     t0[i] = t
             time.sleep(0.01)
-
-
-
 
     def start(self):
         reader_thread = threading.Thread(target=self.periodic, daemon=True)
