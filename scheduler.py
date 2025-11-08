@@ -10,7 +10,7 @@ class Scheduler:
     def periodic(self):
         t0 = [time.perf_counter_ns() for i in range(len(self.jobs))]
         while True:
-            print("2 here")
+            # print("2 here")
             t = time.perf_counter_ns()
 
             for i in range(len(self.jobs)):
