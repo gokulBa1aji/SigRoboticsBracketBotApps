@@ -106,7 +106,7 @@ def pointcloud_reader_single():
 
 def drive_explore_single():
     global state
-    print(state)
+    # print(state)
     # t0 = time.perf_counter_ns()
     # pivot = False
     
