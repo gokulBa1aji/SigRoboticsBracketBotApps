@@ -42,6 +42,7 @@ class ExploreStates(Enum):
 
 state = ExploreStates.PIVOT
 w_drive = Writer("drive.ctrl", Type("drive_ctrl"))
+r_pose = Reader("localizer.pose")
 twist = [0, 0]
 
 def pointcloud_reader():
@@ -132,16 +133,23 @@ def drive_explore_single():
     # print(twist)
     w_drive['twist'] = np.array(twist, dtype=np.float32)
 
-def odometry():
-  with Reader("localizer.pose") as r_pose:
-      pos = [0.0, 0.0, 0.0]
-      while True:
-          if r_pose.ready():
-              # pos = [r_pose.data['x'], r_pose.data['y'], r_pose.data['theta']]
-              pos = [r_pose.data['x'].item(), r_pose.data['y'].item(), 0.0]
-              odometry_points.append(pos)
-              print(pos)
+# def odometry():
+#   with Reader("localizer.pose") as r_pose:
+#       pos = [0.0, 0.0, 0.0]
+#       while True:
+#           if r_pose.ready():
+#               # pos = [r_pose.data['x'], r_pose.data['y'], r_pose.data['theta']]
+#               pos = [r_pose.data['x'].item(), r_pose.data['y'].item(), 0.0]
+#               odometry_points.append(pos)
+#               print(pos)
 
+def odometry_single():
+    pos = [0.0, 0.0, 0.0]
+    if r_pose.ready():
+        # pos = [r_pose.data['x'], r_pose.data['y'], r_pose.data['theta']]
+        pos = [r_pose.data['x'].item(), r_pose.data['y'].item(), 0.0]
+        odometry_points.append(pos)
+        print(pos)
 
 app = FastAPI()
 
@@ -476,6 +484,7 @@ def main():
     scheduler = Scheduler()
     scheduler.add_job(pointcloud_reader_single, 1)
     scheduler.add_job(drive_explore_single, 10)
+    scheduler.add_job(odometry_single, 1)
     scheduler.start()
 
     # drive_thread = threading.Thread(target=drive_explore, daemon=True)
