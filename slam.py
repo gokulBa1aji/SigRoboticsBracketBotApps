@@ -29,6 +29,8 @@ import time
 
 from enum import Enum
 
+import cv2
+
 points_queue = Queue(maxsize=2)
 odometry_points = [[0, 0, 0]]
 
@@ -344,7 +346,9 @@ async def websocket_endpoint(websocket: WebSocket):
                     high_mask = points_data[:, 2] > 0.05 * range
                     points_data[low_mask, 2] = 20
                     points_data[high_mask, 2] = 0
-
+                    
+                    transform = cv2.getAffineTransform(points_data[:, 0 : 2], prev_pointcloud[:, 0 : 2])
+                    print(transform)
                     # kde = KernelDensity(kernel='gaussian').fit(points_data[high_mask])
                     # scores = kde.score_samples(points_data[high_mask])
                     # density = np.exp(scores)
