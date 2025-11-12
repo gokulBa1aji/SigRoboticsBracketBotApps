@@ -60,14 +60,9 @@ def pointcloud_reader():
                         pass
 
 def pointcloud_reader_single():
-    # print("here")
-    # with Reader('camera.points') as r:
-    # print("here3")
     if extern_reader.ready():
-        # print("here5")
         data = extern_reader.data
         try:
-            # print("here7")
             points_queue.put_nowait(data)
         except:
             try:
@@ -75,48 +70,9 @@ def pointcloud_reader_single():
                 points_queue.put_nowait(data)
             except:
                 pass
-    # print("here9")
-
-# def drive_explore():
-#     t0 = time.perf_counter_ns()
-#     # pivot = False
-#     state = ExploreStates.PIVOT
-#     with Writer("drive.ctrl", Type("drive_ctrl")) as w_drive:
-#         twist = [0, 0]
-#         while True:
-#             #twist = [0.0, np.random.rand()]
-#             t = time.perf_counter_ns()
-#             if ((t - t0) > 10 ** 9):
-#                 t0 = t
-#                 if (state == ExploreStates.PIVOT):
-#                     twist = [np.random.rand() * 0.2 - 0.1, 0.0]
-#                     state = ExploreStates.HALT_1
-#                 elif (state == ExploreStates.HALT_1):
-#                     twist = [0.0, 0.0]
-#                     state = ExploreStates.STEP
-#                 elif (state == ExploreStates.STEP):
-#                     twist = [0.0, np.random.rand() * 0.5]
-#                     state = ExploreStates.HALT_2
-#                 elif (state == ExploreStates.HALT_2):
-#                     twist = [0.0, 0]
-#                     state = ExploreStates.PIVOT
-#                 # print(state)
-#                 # print(twist)
-#             w_drive['twist'] = np.array(twist, dtype=np.float32)
 
 def drive_explore_single():
-    global state
-    # print(state)
-    # t0 = time.perf_counter_ns()
-    # pivot = False
-    
-    # with  as :
-    
-    # while True:
-        #twist = [0.0, np.random.rand()]
-    # t = time.perf_counter_ns()
-    # if ((t - t0) > 10 ** 9):
-    #     t0 = t
+    global state, twist
     if (state == ExploreStates.PIVOT):
         twist = [np.random.rand() * 0.2 - 0.1, 0.0]
         state = ExploreStates.HALT_1
@@ -129,19 +85,10 @@ def drive_explore_single():
     elif (state == ExploreStates.HALT_2):
         twist = [0.0, 0]
         state = ExploreStates.PIVOT
-    # print(state)
-    # print(twist)
-    w_drive['twist'] = np.array(twist, dtype=np.float32)
 
-# def odometry():
-#   with Reader("localizer.pose") as r_pose:
-#       pos = [0.0, 0.0, 0.0]
-#       while True:
-#           if r_pose.ready():
-#               # pos = [r_pose.data['x'], r_pose.data['y'], r_pose.data['theta']]
-#               pos = [r_pose.data['x'].item(), r_pose.data['y'].item(), 0.0]
-#               odometry_points.append(pos)
-#               print(pos)
+def apply_drive_input():
+    global twist
+    w_drive['twist'] = np.array(twist, dtype=np.float32)
 
 def odometry_single():
     pos = [0.0, 0.0, 0.0]
@@ -483,7 +430,8 @@ def main():
       # extern_reader = r
     scheduler = Scheduler()
     scheduler.add_job(pointcloud_reader_single, 1)
-    scheduler.add_job(drive_explore_single, 10)
+    scheduler.add_job(drive_explore_single, 1)
+    scheduler.add_job(apply_drive_input, 10)
     scheduler.add_job(odometry_single, 1)
     scheduler.start()
 
