@@ -310,6 +310,8 @@ function animate() {
   }
 }
 
+
+
 animate();
 </script>
 </body>
@@ -317,12 +319,27 @@ animate();
     '''
     return HTMLResponse(content=html)
 
+
+
+def findIfCloseEnoughPointCloud(prev_pointcloud_compressed, unique_point_cloud_list):
+  for pointcloud in unique_point_cloud_list:
+    M = cv2.getAffineTransform(prev_pointcloud_compressed, pointcloud)[0]
+    A = M[:2, :2]
+    theta = np.degrees(np.atan2(A[1, 0], A[0, 0]))
+    position = M[:2, 2]
+    if np.abs(theta) < 1 and np.linalg.norm(position) < 0.1:
+      return True
+   
+  return False
+
 import zlib
 @app.websocket("/ws/points")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     print("WebSocket connection established for point cloud")
     
+    unique_point_cloud_list = []
+
     try:
         prev_pointcloud = np.zeros((5000, 3))
         prev_pointcloud_compressed = None
@@ -398,6 +415,11 @@ async def websocket_endpoint(websocket: WebSocket):
 
                     prev_pointcloud = points_data
                     prev_pointcloud_compressed = zlib.compress(points_data.tobytes())
+                    
+                    result = findIfCloseEnoughPointCloud(prev_pointcloud_compressed, unique_point_cloud_list)
+                    if result == False:
+                      unique_point_cloud_list.append(points_data)
+
                     await websocket.send_bytes(header + points_data.tobytes() + colors_data)
 
                     # odom_points = np.array(odometry_points)
