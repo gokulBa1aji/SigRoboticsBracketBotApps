@@ -418,7 +418,7 @@ async def websocket_endpoint(websocket: WebSocket):
 
                     prev_pointcloud = points_data
                     prev_pointcloud_compressed = zlib.compress(points_data.tobytes())
-                    
+                    print("The length is: ", len(unique_point_cloud_list))
                     result = findIfCloseEnoughPointCloud(prev_pointcloud_compressed, unique_point_cloud_list)
                     if result == False:
                       print("added new point cloud")
