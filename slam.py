@@ -87,6 +87,7 @@ def drive_explore_single():
     elif (state == ExploreStates.HALT_2):
         twist = [0.0, 0]
         state = ExploreStates.PIVOT
+    print(state)
 
 def apply_drive_input():
     global twist

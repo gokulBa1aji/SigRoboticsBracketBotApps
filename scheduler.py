@@ -1,5 +1,6 @@
 import threading
 import time
+from multiprocessing import Process
 
 class Scheduler:
 
@@ -23,8 +24,12 @@ class Scheduler:
             time.sleep(0.01)
 
     def start(self):
-        reader_thread = threading.Thread(target=self.periodic, daemon=True)
-        reader_thread.start()
+        # reader_thread = threading.Thread(target=self.periodic, daemon=True)
+        # reader_thread.start()
+
+        p = Process(target=self.periodic)
+        p.start()
+
         return
     
     def add_job(self, job, freq):
