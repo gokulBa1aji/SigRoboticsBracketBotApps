@@ -105,6 +105,7 @@ app = FastAPI()
 
 @app.get("/", response_class=HTMLResponse)
 async def index():
+    print("entered index")
     html = '''
 <!doctype html>
 <html>
@@ -338,6 +339,7 @@ def findIfCloseEnoughPointCloud(prev_pointcloud_compressed, unique_point_cloud_l
 import zlib
 @app.websocket("/ws/points")
 async def websocket_endpoint(websocket: WebSocket):
+    print("unique string")
     await websocket.accept()
     print("WebSocket connection established for point cloud")
     
