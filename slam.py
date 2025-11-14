@@ -326,7 +326,10 @@ def findIfCloseEnoughPointCloud(prev_pointcloud_compressed, unique_point_cloud_l
     M = cv2.getAffineTransform(prev_pointcloud_compressed, pointcloud)[0]
     A = M[:2, :2]
     theta = np.degrees(np.atan2(A[1, 0], A[0, 0]))
-    position = M[:2, 2]
+    print("Theta: ", theta)
+    
+    position = M[:, 2]
+    print("Position: ", position)
     if np.abs(theta) < 1 and np.linalg.norm(position) < 0.1:
       return True
    
@@ -418,7 +421,11 @@ async def websocket_endpoint(websocket: WebSocket):
                     
                     result = findIfCloseEnoughPointCloud(prev_pointcloud_compressed, unique_point_cloud_list)
                     if result == False:
+                      print("added new point cloud")
                       unique_point_cloud_list.append(points_data)
+                    
+
+                    
 
                     await websocket.send_bytes(header + points_data.tobytes() + colors_data)
 
