@@ -87,7 +87,7 @@ def drive_explore_single():
     elif (state == ExploreStates.HALT_2):
         twist = [0.0, 0]
         state = ExploreStates.PIVOT
-    print(state)
+    # print(state)
 
 def apply_drive_input():
     global twist
@@ -99,13 +99,13 @@ def odometry_single():
         # pos = [r_pose.data['x'], r_pose.data['y'], r_pose.data['theta']]
         pos = [r_pose.data['x'].item(), r_pose.data['y'].item(), 0.0]
         odometry_points.append(pos)
-        print(pos)
+        # print(pos)
 
 app = FastAPI()
 
 @app.get("/", response_class=HTMLResponse)
 async def index():
-    print("entered index")
+    # print("entered index")
     html = '''
 <!doctype html>
 <html>
@@ -327,10 +327,10 @@ def findIfCloseEnoughPointCloud(prev_pointcloud_compressed, unique_point_cloud_l
     M = cv2.getAffineTransform(prev_pointcloud_compressed, pointcloud)[0]
     A = M[:2, :2]
     theta = np.degrees(np.atan2(A[1, 0], A[0, 0]))
-    print("Theta: ", theta)
+    # print("Theta: ", theta)
     
     position = M[:, 2]
-    print("Position: ", position)
+    # print("Position: ", position)
     if np.abs(theta) < 1 and np.linalg.norm(position) < 0.1:
       return True
    
@@ -339,7 +339,7 @@ def findIfCloseEnoughPointCloud(prev_pointcloud_compressed, unique_point_cloud_l
 import zlib
 @app.websocket("/ws/points")
 async def websocket_endpoint(websocket: WebSocket):
-    print("unique string")
+    # print("unique string")
     await websocket.accept()
     print("WebSocket connection established for point cloud")
     
@@ -420,10 +420,10 @@ async def websocket_endpoint(websocket: WebSocket):
 
                     prev_pointcloud = points_data
                     prev_pointcloud_compressed = zlib.compress(points_data.tobytes())
-                    print("The length is: ", len(unique_point_cloud_list))
+                    # print("The length is: ", len(unique_point_cloud_list))
                     result = findIfCloseEnoughPointCloud(prev_pointcloud_compressed, unique_point_cloud_list)
                     if result == False:
-                      print("added new point cloud")
+                      # print("added new point cloud")
                       unique_point_cloud_list.append(points_data)
                     
 
