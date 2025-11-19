@@ -339,7 +339,7 @@ def findIfCloseEnoughPointCloud(prev_pointcloud_compressed, unique_point_cloud_l
 import zlib
 @app.websocket("/ws/points")
 async def websocket_endpoint(websocket: WebSocket):
-    # print("unique string")
+    print("unique string")
     await websocket.accept()
     print("WebSocket connection established for point cloud")
     
