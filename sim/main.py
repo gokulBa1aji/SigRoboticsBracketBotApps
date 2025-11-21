@@ -1,6 +1,6 @@
 import pygame
 import sys
-
+from graphslam.graph import Graph
 # --- Initialization ---
 pygame.init()
 
@@ -39,7 +39,7 @@ moving_right = False
 # --- Game Loop ---
 def game_loop():
     global ball_x, ball_y, moving_up, moving_down, moving_left, moving_right
-
+    trajectory = []
     running = True
     while running:
         # --- Event Handling ---
@@ -96,7 +96,7 @@ def game_loop():
             ball_y = SCREEN_HEIGHT - BALL_RADIUS
 
         # --- Drawing ---
-        
+        trajectory.append((ball_x, ball_y))
         # Fill the screen with black
         screen.fill(BLACK)
         
@@ -109,9 +109,33 @@ def game_loop():
         # Limit frame rate
         clock.tick(60)
 
+    def write_g2o(filename, trajectory):
+      with open(filename, "w") as f:
+      # Write vertices
+        for i, (x, y) in enumerate(trajectory):
+          f.write(f"VERTEX_SE2 {i} {x} {y} 0\n")
+
+        # Write edges between consecutive poses
+        for i in range(len(trajectory) - 1):
+            x1, y1 = trajectory[i]
+            x2, y2 = trajectory[i+1]
+
+            dx = x2 - x1
+            dy = y2 - y1
+            dtheta = 0
+
+            # A simple information matrix (high confidence)
+            info = "1000 0 0 1000 0 1000"
+
+            f.write(f"EDGE_SE2 {i} {i+1} {dx} {dy} {dtheta} {info}\n")
+    
+    write_g2o("trajectory.g2o", trajectory)
+    print("Saved trajectory.g2o!")
+    
     # --- Quit Pygame ---
     pygame.quit()
     sys.exit()
+
 
 if __name__ == "__main__":
     game_loop()
