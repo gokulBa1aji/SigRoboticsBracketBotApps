@@ -464,12 +464,12 @@ def main():
 
     # with Reader('camera.points') as r:
       # extern_reader = r
-    #scheduler = Scheduler()
-    #scheduler.add_job(pointcloud_reader_single, 1)
-    #scheduler.add_job(drive_explore_single, 1)
-    #scheduler.add_job(apply_drive_input, 10)
-    #scheduler.add_job(odometry_single, 1)
-    #scheduler.start()
+    scheduler = Scheduler()
+    scheduler.add_job(pointcloud_reader_single, 1)
+    scheduler.add_job(drive_explore_single, 1)
+    scheduler.add_job(apply_drive_input, 10)
+    scheduler.add_job(odometry_single, 1)
+    scheduler.start()
 
     # drive_thread = threading.Thread(target=drive_explore, daemon=True)
     # drive_thread.start()
