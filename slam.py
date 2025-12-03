@@ -350,13 +350,15 @@ async def websocket_endpoint(websocket: WebSocket):
         prev_pointcloud_compressed = None
         while True:
             try:
-                print("Hello World")
+                
                 # Get latest point cloud data
                 data = points_queue.get(timeout=0.05)
                 
                 # Pack binary data
                 num_points = int(data['num_points'])
                 if num_points > 0 and num_points < 100000:
+                    print("Hello World")
+
                     # Points: num_points * 3 * 2 bytes (float16)
                     # points are row vectors, points_data is N x 3
                     points_data = data['points'][:num_points]
