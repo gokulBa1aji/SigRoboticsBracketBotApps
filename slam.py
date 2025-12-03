@@ -438,7 +438,7 @@ async def websocket_endpoint(websocket: WebSocket):
                     # print(odom_points.shape)
                     # await websocket.send_bytes(header + odom_points.tobytes() + colors_data)
                    
-            except e:
+            except Exception as e:
                 print(e)
                 await asyncio.sleep(0.01)
                 
