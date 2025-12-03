@@ -369,6 +369,7 @@ async def websocket_endpoint(websocket: WebSocket):
                     high_mask = points_data[:, 2] > 0.05 * range
                     points_data[low_mask, 2] = 20
                     points_data[high_mask, 2] = 0
+                    print(points_data.shape)
                     # transform = cv2.getAffineTransform(points_data[:, 0 : 2], prev_pointcloud[:, 0 : 2])
                     # print(transform)
                     # kde = KernelDensity(kernel='gaussian').fit(points_data[high_mask])
