@@ -349,6 +349,7 @@ async def websocket_endpoint(websocket: WebSocket):
         prev_pointcloud = np.zeros((5000, 3))
         prev_pointcloud_compressed = None
         while True:
+            print("Hello World")
             try:
                 # Get latest point cloud data
                 data = points_queue.get(timeout=0.05)
