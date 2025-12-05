@@ -21,7 +21,7 @@ class Scheduler:
                         self.jobs[i]()
                         end = time.perf_counter()
                         elapsed = end - start
-                        # print(self.jobs[i].__name__, ": ")
+                        print(self.jobs[i].__name__, ": ")
                         # print(f'Time taken: {elapsed:.6f} seconds')
                     except Exception as e:
                         print(e)
