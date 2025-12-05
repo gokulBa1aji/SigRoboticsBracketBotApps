@@ -62,6 +62,7 @@ def pointcloud_reader():
                         pass
 
 def pointcloud_reader_single():
+    print("made it here 4")
     if extern_reader.ready():
         data = extern_reader.data
         try:
@@ -351,13 +352,15 @@ async def websocket_endpoint(websocket: WebSocket):
         while True:
             try:
                 # Get latest point cloud data
+                print("made it here 1")
                 data = points_queue.get(timeout=0.05)
-                
+                print("made it here 2")
                 # Pack binary data
                 num_points = int(data['num_points'])
                 if num_points > 0 and num_points < 100000:
                     # Points: num_points * 3 * 2 bytes (float16)
                     # points are row vectors, points_data is N x 3
+                    print("made it here 3")
                     points_data = data['points'][:num_points]
 
                     num_points = 5000
