@@ -464,7 +464,7 @@ async def get_status():
 def main():
     # reader_thread = threading.Thread(target=pointcloud_reader, daemon=True)
     # reader_thread.start()
-
+    print("entered main")
     # with Reader('camera.points') as r:
       # extern_reader = r
     scheduler = Scheduler()
